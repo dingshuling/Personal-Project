@@ -1,2 +1,2 @@
-# data-mining
-data mining project
+# Personal-Project
+Personal project
