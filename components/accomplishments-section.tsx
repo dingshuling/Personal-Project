@@ -16,42 +16,42 @@ export default function AccomplishmentsSection() {
       category: "strategy",
       title: "AI-First Data Strategy",
       description:
-        "Design intelligent data flows from day one that power personalization, prediction, and product intelligence. I architect data foundations that make AI products successful, not just functional.",
+        "Design intelligent data flows from day one to power personalization, prediction, and product intelligence. I build data foundations that make products truly successful.",
       icon: <Brain className="h-10 w-10 text-emerald-500" />,
     },
     {
       category: "scaling",
       title: "Hypergrowth Scaling",
       description:
-        "Proven experience scaling data systems and teams through 10x growth. I know what breaks at different scales and how to build infrastructure that evolves with your startup.",
+        "Scaled data systems and teams through 10x growth, with deep experience in what breaks at each stage—and how to build infrastructure that grows with the product.",
       icon: <Zap className="h-10 w-10 text-emerald-500" />,
     },
     {
       category: "experimentation",
       title: "Experimentation Frameworks",
       description:
-        "Build systematic A/B testing capabilities that drive hundreds of experiments per quarter. I focus on frameworks that actually influence product decisions and business outcomes.",
+        "Built scalable A/B testing systems supporting hundreds of experiments each quarter—accelerating product iteration, improving decisions, and driving business impact.",
       icon: <Target className="h-10 w-10 text-emerald-500" />,
     },
     {
       category: "analytics",
       title: "Predictive Analytics",
       description:
-        "Develop machine learning models that anticipate user behavior, predict customer lifetime value, and identify growth opportunities. Turn historical data into forward-looking business intelligence.",
+        "Develop machine learning models that predict user behavior, customer lifetime value, and identify growth opportunities. Turn historical data into forward-looking business intelligence.",
       icon: <Crystal className="h-10 w-10 text-emerald-500" />,
     },
     {
       category: "democratization",
       title: "Data Democratization",
       description:
-        "Create self-service analytics tools and automated reporting that empower entire teams to make data-driven decisions. Transform complex data into accessible insights that drive real business value.",
+        "Built self-service analytics tools and automated reporting that empower teams to make data-driven decisions. Turn complex data into clear, actionable insights that drive real business value.",
       icon: <BarChart3 className="h-10 w-10 text-emerald-500" />,
     },
     {
       category: "leadership",
       title: "Cross-Functional Leadership",
       description:
-        "Bridge the gap between technical data capabilities and business strategy. I translate complex data insights into actionable strategies for product, marketing, and executive teams.",
+        "Bridge the gap between data and business strategy by translating complex insights into clear, actionable plans for product, growth, and executive teams.",
       icon: <Handshake className="h-10 w-10 text-emerald-500" />,
     },
   ]
