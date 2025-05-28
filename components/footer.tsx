@@ -10,7 +10,7 @@ export default function Footer() {
             <Link href="/" className="text-2xl font-bold text-emerald-400">
               Shuling Ding
             </Link>
-            <p className="mt-2 text-gray-400 max-w-md">AI & Data Strategy for Health Tech Startups</p>
+            <p className="mt-2 text-gray-400 max-w-md">AI & Data Strategy for Health & AI Centric Startups</p>
           </div>
 
           <div className="flex space-x-6">
@@ -44,7 +44,7 @@ export default function Footer() {
 
         <div className="mt-8 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} Shuling Ding. All rights reserved.
+            &copy; {new Date().getFullYear()} Shuling Ding. Let's build something intelligent together.
           </div>
 
           <div className="mt-4 md:mt-0">
