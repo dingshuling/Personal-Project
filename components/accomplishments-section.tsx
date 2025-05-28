@@ -16,7 +16,7 @@ export default function AccomplishmentsSection() {
       category: "strategy",
       title: "AI-First Data Strategy",
       description:
-        "Design intelligent data flows from day one to power personalization, prediction, and product intelligence. I build data foundations that make products truly successful.",
+        "Design intelligent data flows from day one to power personalization, prediction, and product intelligence. Build data foundations that make products truly successful.",
       icon: <Brain className="h-10 w-10 text-emerald-500" />,
     },
     {
