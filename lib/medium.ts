@@ -1,23 +1,42 @@
-// Replace the entire file with this updated implementation
-
+// Updated Medium integration with better mobile compatibility
 export async function getMediumPosts() {
   try {
-    // Use a CORS proxy for client-side requests
-    const username = "dingshuling" // Replace with your Medium username
-    const corsProxy = "https://api.allorigins.win/raw?url="
+    // Try multiple CORS proxies for better mobile compatibility
+    const username = "dingshuling"
     const mediumRssUrl = `https://medium.com/feed/@${username}`
-    const url = `${corsProxy}${encodeURIComponent(mediumRssUrl)}`
 
-    const response = await fetch(url, { next: { revalidate: 3600 } }) // Revalidate every hour
+    // List of CORS proxies to try
+    const corsProxies = [
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(mediumRssUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(mediumRssUrl)}`,
+      `https://corsproxy.io/?${encodeURIComponent(mediumRssUrl)}`,
+    ]
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Medium RSS feed: ${response.status}`)
+    let posts = []
+
+    // Try each proxy until one works
+    for (const proxyUrl of corsProxies) {
+      try {
+        const response = await fetch(proxyUrl, {
+          next: { revalidate: 3600 },
+          headers: {
+            "User-Agent": "Mozilla/5.0 (compatible; Portfolio-Bot/1.0)",
+          },
+        })
+
+        if (response.ok) {
+          const xml = await response.text()
+          posts = parseRssFeed(xml)
+          if (posts.length > 0) {
+            break // Success, exit the loop
+          }
+        }
+      } catch (error) {
+        console.warn(`CORS proxy failed: ${proxyUrl}`, error)
+        continue // Try next proxy
+      }
     }
 
-    const xml = await response.text()
-
-    // Simple XML parsing for Medium RSS feed
-    const posts = parseRssFeed(xml)
     return posts
   } catch (error) {
     console.error("Error fetching Medium posts:", error)
@@ -26,58 +45,66 @@ export async function getMediumPosts() {
 }
 
 function parseRssFeed(xml) {
-  // Extract items from RSS feed
-  const itemRegex = /<item>([\s\S]*?)<\/item>/g
-  const items = []
-  let match
+  try {
+    // Extract items from RSS feed
+    const itemRegex = /<item>([\s\S]*?)<\/item>/g
+    const items = []
+    let match
 
-  while ((match = itemRegex.exec(xml)) !== null) {
-    const itemXml = match[1]
+    while ((match = itemRegex.exec(xml)) !== null) {
+      const itemXml = match[1]
 
-    // Extract key elements
-    const title = extractTag(itemXml, "title")
-    const link = extractTag(itemXml, "link")
-    const pubDate = extractTag(itemXml, "pubDate")
-    const content = extractTag(itemXml, "content:encoded") || extractTag(itemXml, "description")
+      // Extract key elements
+      const title = extractTag(itemXml, "title")
+      const link = extractTag(itemXml, "link")
+      const pubDate = extractTag(itemXml, "pubDate")
+      const content = extractTag(itemXml, "content:encoded") || extractTag(itemXml, "description")
 
-    // Extract and clean categories
-    const rawCategories = extractAllTags(itemXml, "category")
-    const categories = rawCategories.map(cleanCategory).filter(Boolean)
+      // Skip if essential data is missing
+      if (!title || !link) continue
 
-    // Use default categories if none are found or if they're all filtered out
-    const finalCategories = categories.length > 0 ? categories : ["health tech"]
+      // Extract and clean categories
+      const rawCategories = extractAllTags(itemXml, "category")
+      const categories = rawCategories.map(cleanCategory).filter(Boolean)
 
-    // Extract image from content
-    const imageUrl = extractImageFromContent(content)
+      // Use default categories if none are found or if they're all filtered out
+      const finalCategories = categories.length > 0 ? categories : ["health tech"]
 
-    // Create excerpt from content
-    const excerpt = createExcerpt(content)
+      // Extract image from content
+      const imageUrl = extractImageFromContent(content)
 
-    // Format date
-    const date = formatDate(pubDate)
+      // Create excerpt from content
+      const excerpt = createExcerpt(content)
 
-    // Calculate reading time (rough estimate)
-    const readingTime = Math.ceil(stripHtml(content).length / 1000) || 5
+      // Format date
+      const date = formatDate(pubDate)
 
-    // Extract guid for slug
-    const guid = extractTag(itemXml, "guid")
-    const slug = guid.split("/").pop() || `medium-${Date.now()}`
+      // Calculate reading time (rough estimate)
+      const readingTime = Math.ceil(stripHtml(content).length / 1000) || 5
 
-    items.push({
-      slug,
-      title,
-      excerpt,
-      date,
-      readingTime,
-      categories: finalCategories,
-      coverImage: imageUrl,
-      author: "Shuling Ding",
-      isExternal: true,
-      externalUrl: link,
-    })
+      // Extract guid for slug
+      const guid = extractTag(itemXml, "guid")
+      const slug = guid.split("/").pop() || `medium-${Date.now()}`
+
+      items.push({
+        slug,
+        title,
+        excerpt,
+        date,
+        readingTime,
+        categories: finalCategories,
+        coverImage: imageUrl,
+        author: "Shuling Ding",
+        isExternal: true,
+        externalUrl: link,
+      })
+    }
+
+    return items
+  } catch (error) {
+    console.error("Error parsing RSS feed:", error)
+    return []
   }
-
-  return items
 }
 
 function extractTag(xml, tagName) {

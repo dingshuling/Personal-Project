@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { TrendingUp, Target, Lightbulb, Users, BarChart } from "lucide-react"
+import { Brain, Zap, Target, SnowflakeIcon as Crystal, BarChart3, Handshake } from "lucide-react"
 
 export default function AccomplishmentsSection() {
   const fadeInUp = {
@@ -11,58 +11,48 @@ export default function AccomplishmentsSection() {
     visible: { opacity: 1, y: 0 },
   }
 
-  const accomplishments = [
+  const expertise = [
     {
-      category: "growth",
-      title: "10x Growth Contribution",
+      category: "strategy",
+      title: "AI-First Data Strategy",
       description:
-        "Contributed to Tubi's 10x growth by designing, building, and deploying machine learning models to forecast customer behaviors and identify key drivers in product engagement, content performance, and revenue growth.",
-      icon: <TrendingUp className="h-10 w-10 text-emerald-500" />,
-      metrics: ["10x company growth", "17-member global data team", "$30-40M additional revenue"],
+        "Design intelligent data flows from day one that power personalization, prediction, and product intelligence. I architect data foundations that make AI products successful, not just functional.",
+      icon: <Brain className="h-10 w-10 text-emerald-500" />,
     },
     {
-      category: "growth",
-      title: "Revenue Optimization",
+      category: "scaling",
+      title: "Hypergrowth Scaling",
       description:
-        "Led a team of analysts to design and execute pricing A/B tests at Hotwire, driving 10% YOY revenue growth and increasing hotel bookings by 15% through partnership pricing strategies.",
-      icon: <BarChart className="h-10 w-10 text-emerald-500" />,
-      metrics: ["10% YOY revenue growth", "15% increase in hotel bookings"],
+        "Proven experience scaling data systems and teams through 10x growth. I know what breaks at different scales and how to build infrastructure that evolves with your startup.",
+      icon: <Zap className="h-10 w-10 text-emerald-500" />,
     },
     {
-      category: "innovation",
-      title: "Scalable A/B Experimentation Framework",
+      category: "experimentation",
+      title: "Experimentation Frameworks",
       description:
-        "Developed a framework enabling hundreds of experiments per quarter, accelerating product development and generating $30-40M in additional revenue in 2023 through the switchback experimentation framework.",
+        "Build systematic A/B testing capabilities that drive hundreds of experiments per quarter. I focus on frameworks that actually influence product decisions and business outcomes.",
       icon: <Target className="h-10 w-10 text-emerald-500" />,
-      metrics: ["Hundreds of experiments per quarter", "$30-40M additional revenue"],
     },
     {
-      category: "innovation",
-      title: "AI-Powered Automation Tools",
+      category: "analytics",
+      title: "Predictive Analytics",
       description:
-        "Developed and deployed AI-powered automation tools to improve efficiency and enhance data democratization, including streamlining customer support workflows, building Text-to-SQL tools, creating metrics alert systems, and automating planning tools.",
-      icon: <Lightbulb className="h-10 w-10 text-emerald-500" />,
-      metrics: ["Streamlined support workflows", "Enhanced data accessibility", "Automated planning tools"],
+        "Develop machine learning models that anticipate user behavior, predict customer lifetime value, and identify growth opportunities. Turn historical data into forward-looking business intelligence.",
+      icon: <Crystal className="h-10 w-10 text-emerald-500" />,
     },
     {
-      category: "leadership",
-      title: "Data Team Scaling",
-      description:
-        "Scaled a global data team from 2 to 17 members at Tubi, nurturing a culture of cross-functional collaboration and continuous learning while working closely with executive leadership to build data strategy and company roadmap.",
-      icon: <Users className="h-10 w-10 text-emerald-500" />,
-      metrics: [
-        "Scaled from 2 to 17 team members",
-        "Cross-functional collaboration",
-        "Executive leadership partnership",
-      ],
-    },
-    {
-      category: "leadership",
+      category: "democratization",
       title: "Data Democratization",
       description:
-        "Facilitated data democratization by streamlining data structure and creating self-service tools to enhance data accessibility, accuracy, and usability across the organization.",
-      icon: <Users className="h-10 w-10 text-emerald-500" />,
-      metrics: ["Enhanced data accessibility", "Improved data accuracy", "Organization-wide usability"],
+        "Create self-service analytics tools and automated reporting that empower entire teams to make data-driven decisions. Transform complex data into accessible insights that drive real business value.",
+      icon: <BarChart3 className="h-10 w-10 text-emerald-500" />,
+    },
+    {
+      category: "leadership",
+      title: "Cross-Functional Leadership",
+      description:
+        "Bridge the gap between technical data capabilities and business strategy. I translate complex data insights into actionable strategies for product, marketing, and executive teams.",
+      icon: <Handshake className="h-10 w-10 text-emerald-500" />,
     },
   ]
 
@@ -77,50 +67,72 @@ export default function AccomplishmentsSection() {
           variants={fadeInUp}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Key Accomplishments</h2>
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Core Expertise</h2>
           <div className="w-20 h-1 bg-emerald-500 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Throughout my career, I've delivered measurable results and innovative solutions that drive growth,
-            efficiency, and data-driven decision making.
-          </p>
         </motion.div>
 
         <Tabs defaultValue="all" className="w-full">
-          <div className="flex justify-center mb-8">
-            <TabsList className="bg-white dark:bg-gray-800">
+          <div className="flex justify-center mb-12">
+            <TabsList className="bg-white dark:bg-gray-800 shadow-md">
               <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="growth">Growth</TabsTrigger>
-              <TabsTrigger value="innovation">Innovation</TabsTrigger>
-              <TabsTrigger value="leadership">Leadership</TabsTrigger>
+              <TabsTrigger value="strategy">Strategy</TabsTrigger>
+              <TabsTrigger value="scaling">Scaling</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
           </div>
 
           <TabsContent value="all" className="mt-0">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {accomplishments.map((item, index) => (
-                <AccomplishmentCard key={index} item={item} index={index} />
-              ))}
+            <div className="max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {expertise.map((item, index) => (
+                  <ExpertiseCard key={index} item={item} index={index} />
+                ))}
+              </div>
             </div>
           </TabsContent>
 
-          {["growth", "innovation", "leadership"].map((category) => (
-            <TabsContent key={category} value={category} className="mt-0">
+          <TabsContent value="strategy" className="mt-0">
+            <div className="max-w-5xl mx-auto">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {accomplishments
-                  .filter((item) => item.category === category)
+                {expertise
+                  .filter((item) => ["strategy", "leadership"].includes(item.category))
                   .map((item, index) => (
-                    <AccomplishmentCard key={index} item={item} index={index} />
+                    <ExpertiseCard key={index} item={item} index={index} />
                   ))}
               </div>
-            </TabsContent>
-          ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="scaling" className="mt-0">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {expertise
+                  .filter((item) => ["scaling", "democratization"].includes(item.category))
+                  .map((item, index) => (
+                    <ExpertiseCard key={index} item={item} index={index} />
+                  ))}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="mt-0">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {expertise
+                  .filter((item) => ["analytics", "experimentation"].includes(item.category))
+                  .map((item, index) => (
+                    <ExpertiseCard key={index} item={item} index={index} />
+                  ))}
+              </div>
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </section>
   )
 }
 
-function AccomplishmentCard({ item, index }) {
+function ExpertiseCard({ item, index }) {
   return (
     <motion.div
       initial="hidden"
@@ -132,22 +144,11 @@ function AccomplishmentCard({ item, index }) {
         visible: { opacity: 1, y: 0 },
       }}
     >
-      <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow duration-300 border-0 shadow-md dark:bg-gray-800">
-        <CardContent className="p-6">
+      <Card className="h-full overflow-hidden hover:shadow-lg transition-all duration-300 border-0 shadow-md dark:bg-gray-800 hover:scale-105">
+        <CardContent className="p-6 text-center">
           <div className="flex justify-center mb-4">{item.icon}</div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center mb-4">{item.title}</h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">{item.description}</p>
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Key Metrics:</h4>
-            <ul className="space-y-1">
-              {item.metrics.map((metric, i) => (
-                <li key={i} className="flex items-center text-gray-600 dark:text-gray-300">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></div>
-                  {metric}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 leading-tight">{item.title}</h3>
+          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{item.description}</p>
         </CardContent>
       </Card>
     </motion.div>

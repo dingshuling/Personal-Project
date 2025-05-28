@@ -34,31 +34,10 @@ export default function Hero() {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })}
+              onClick={() => document.getElementById("accomplishments")?.scrollIntoView({ behavior: "smooth" })}
             >
-              Learn How I Can Help
+              View My Expertise
             </Button>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-16 w-full max-w-4xl"
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            {[
-              { number: "15+", label: "Years Experience" },
-              { number: "10x", label: "Growth Contribution" },
-              { number: "$40M", label: "Revenue Impact" },
-              { number: "17+", label: "Team Members Led" },
-            ].map((stat, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{stat.number}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
-              </div>
-            ))}
           </div>
         </motion.div>
       </div>

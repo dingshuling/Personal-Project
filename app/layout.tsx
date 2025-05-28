@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Shuling Ding | AI & Data Strategy for Health Tech",
-  description: "Senior data science leader helping health and wellness startups leverage AI and data for growth",
+  description: "About Me",
     generator: 'v0.dev'
 }
 
