@@ -1,111 +1,179 @@
-// Fetch Medium posts dynamically from RSS feed
+// Updated Medium integration with better mobile compatibility
 export async function getMediumPosts() {
   try {
-    // Get Medium username from environment variable or use default
-    const mediumUsername = process.env.MEDIUM_USERNAME || "dingshuling"
+    // Try multiple CORS proxies for better mobile compatibility
+    const username = "dingshuling"
+    const mediumRssUrl = `https://medium.com/feed/@${username}`
 
-    // Fetch the RSS feed
-    const response = await fetch(`https://medium.com/feed/@${mediumUsername}`, {
-      next: { revalidate: 3600 }, // Revalidate hourly
-    })
+    // List of CORS proxies to try
+    const corsProxies = [
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(mediumRssUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(mediumRssUrl)}`,
+      `https://corsproxy.io/?${encodeURIComponent(mediumRssUrl)}`,
+    ]
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Medium posts: ${response.status}`)
+    let posts = []
+
+    // Try each proxy until one works
+    for (const proxyUrl of corsProxies) {
+      try {
+        const response = await fetch(proxyUrl, {
+          next: { revalidate: 3600 },
+          headers: {
+            "User-Agent": "Mozilla/5.0 (compatible; Portfolio-Bot/1.0)",
+          },
+        })
+
+        if (response.ok) {
+          const xml = await response.text()
+          posts = parseRssFeed(xml)
+          if (posts.length > 0) {
+            break // Success, exit the loop
+          }
+        }
+      } catch (error) {
+        console.warn(`CORS proxy failed: ${proxyUrl}`, error)
+        continue // Try next proxy
+      }
     }
 
-    const xml = await response.text()
-
-    // Parse the XML feed
-    const posts = await parseRssFeed(xml)
     return posts
   } catch (error) {
     console.error("Error fetching Medium posts:", error)
-    // Return empty array on error instead of hardcoded fallbacks
     return []
   }
 }
 
-// Parse the RSS feed XML
-async function parseRssFeed(xml) {
+function parseRssFeed(xml) {
   try {
-    // Use DOMParser in browser or a server-side XML parser
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(xml, "text/xml")
+    // Extract items from RSS feed
+    const itemRegex = /<item>([\s\S]*?)<\/item>/g
+    const items = []
+    let match
 
-    const items = doc.querySelectorAll("item")
-    const posts = []
+    while ((match = itemRegex.exec(xml)) !== null) {
+      const itemXml = match[1]
 
-    items.forEach((item, index) => {
-      // Extract content from RSS item
-      const title = item.querySelector("title")?.textContent || ""
-      const link = item.querySelector("link")?.textContent || ""
-      const pubDate = item.querySelector("pubDate")?.textContent || ""
-      const description = item.querySelector("description")?.textContent || ""
+      // Extract key elements
+      const title = extractTag(itemXml, "title")
+      const link = extractTag(itemXml, "link")
+      const pubDate = extractTag(itemXml, "pubDate")
+      const content = extractTag(itemXml, "content:encoded") || extractTag(itemXml, "description")
 
-      // Extract categories
-      const categories = []
-      item.querySelectorAll("category").forEach((category) => {
-        if (category.textContent) categories.push(category.textContent)
-      })
+      // Skip if essential data is missing
+      if (!title || !link) continue
 
-      // Create a slug from the title
-      const slug = title
-        .toLowerCase()
-        .replace(/[^\w\s]/gi, "")
-        .replace(/\s+/g, "-")
+      // Extract and clean categories
+      const rawCategories = extractAllTags(itemXml, "category")
+      const categories = rawCategories.map(cleanCategory).filter(Boolean)
 
-      // Parse date
-      const date = new Date(pubDate)
-      const formattedDate = date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
+      // Use default categories if none are found or if they're all filtered out
+      const finalCategories = categories.length > 0 ? categories : ["health tech"]
 
-      // Extract reading time (estimate based on content length)
-      const contentText = stripHtml(description)
-      const wordCount = contentText.split(/\s+/).length
-      const readingTime = Math.max(1, Math.ceil(wordCount / 200)) // Assume 200 words per minute
+      // Extract image from content
+      const imageUrl = extractImageFromContent(content)
 
-      // Extract first image as cover or use placeholder
-      const coverImage = extractFirstImage(description) || `/placeholder.svg?height=200&width=400&text=Medium+Article`
+      // Create excerpt from content
+      const excerpt = createExcerpt(content)
 
-      posts.push({
+      // Format date
+      const date = formatDate(pubDate)
+
+      // Calculate reading time (rough estimate)
+      const readingTime = Math.ceil(stripHtml(content).length / 1000) || 5
+
+      // Extract guid for slug
+      const guid = extractTag(itemXml, "guid")
+      const slug = guid.split("/").pop() || `medium-${Date.now()}`
+
+      items.push({
         slug,
         title,
-        excerpt: truncateText(stripHtml(description), 150),
-        date: formattedDate,
+        excerpt,
+        date,
         readingTime,
-        categories: categories.length > 0 ? categories : ["article"],
-        coverImage,
+        categories: finalCategories,
+        coverImage: imageUrl,
         author: "Shuling Ding",
         isExternal: true,
         externalUrl: link,
       })
-    })
+    }
 
-    return posts
+    return items
   } catch (error) {
     console.error("Error parsing RSS feed:", error)
     return []
   }
 }
 
-// Helper function to strip HTML tags
+function extractTag(xml, tagName) {
+  const regex = new RegExp(`<${tagName}[^>]*>(.*?)<\/${tagName}>`, "s")
+  const match = xml.match(regex)
+  return match ? cleanCdata(match[1].trim()) : ""
+}
+
+function extractAllTags(xml, tagName) {
+  const regex = new RegExp(`<${tagName}[^>]*>(.*?)<\/${tagName}>`, "g")
+  const results = []
+  let match
+
+  while ((match = regex.exec(xml)) !== null) {
+    results.push(match[1].trim())
+  }
+
+  return results
+}
+
+function cleanCdata(text) {
+  // Remove CDATA wrapper if present
+  if (text.startsWith("<![CDATA[") && text.endsWith("]]>")) {
+    return text.substring(9, text.length - 3)
+  }
+  return text
+}
+
+function cleanCategory(category) {
+  // Clean up CDATA sections in categories
+  const cleaned = cleanCdata(category)
+
+  // Skip empty categories or those with special characters
+  if (!cleaned || cleaned.includes("<") || cleaned.includes(">")) {
+    return null
+  }
+
+  return cleaned.toLowerCase()
+}
+
+function extractImageFromContent(content) {
+  // Try to find the first image in the content
+  const imgRegex = /<img[^>]+src="([^">]+)"/
+  const match = content.match(imgRegex)
+  return match ? match[1] : "/connected-health.png"
+}
+
+function createExcerpt(content) {
+  // Remove HTML tags and create a short excerpt
+  const text = stripHtml(content)
+  return text.length > 200 ? text.substring(0, 200) + "..." : text
+}
+
 function stripHtml(html) {
-  const tmp = document.createElement("DIV")
-  tmp.innerHTML = html
-  return tmp.textContent || tmp.innerText || ""
+  return html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim()
 }
 
-// Helper function to truncate text
-function truncateText(text, maxLength) {
-  if (text.length <= maxLength) return text
-  return text.substr(0, maxLength) + "..."
-}
-
-// Helper function to extract the first image from HTML content
-function extractFirstImage(html) {
-  const match = html.match(/<img[^>]+src="([^">]+)"/)
-  return match ? match[1] : null
+function formatDate(dateStr) {
+  try {
+    const date = new Date(dateStr)
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
+  } catch (e) {
+    return dateStr
+  }
 }

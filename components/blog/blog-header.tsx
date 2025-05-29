@@ -25,8 +25,8 @@ export default function BlogHeader() {
             Health Tech <span className="text-emerald-600 dark:text-emerald-400">Insights</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300">
-            Thoughts, strategies, and analysis on AI, data science, and the future of health technology from my Medium
-            blog.
+            Thoughts, strategies, and analysis on AI, data science, and the future of health technology. Featuring
+            articles from my Medium blog and exclusive content.
           </p>
         </motion.div>
       </div>
