@@ -152,7 +152,7 @@ export default function ContactSection() {
               </div>
             ) : (
               <form
-                action="https://formspree.io/f/xrgwkpaz"
+                action="https://formspree.io/f/xeoawlwy"
                 method="POST"
                 className="space-y-6"
                 onSubmit={handleSubmit}

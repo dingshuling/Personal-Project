@@ -3,59 +3,38 @@
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, ExternalLink } from "lucide-react"
+import { Calendar, ExternalLink, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function FeaturedPosts() {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Fetch Medium posts on the client side with mobile fallback
-    async function fetchMediumPosts() {
+    async function loadPosts() {
       try {
-        // Add a timeout for mobile networks
-        const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
-
-        const response = await fetch("/api/medium-posts", {
-          signal: controller.signal,
-          headers: {
-            "Cache-Control": "no-cache",
-          },
-        })
-
-        clearTimeout(timeoutId)
+        setLoading(true)
+        const response = await fetch("/api/medium-posts")
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch Medium posts: ${response.status}`)
+          throw new Error(`Failed to fetch posts: ${response.status}`)
         }
 
-        const mediumPosts = await response.json()
-
-        // Only use Medium posts, take the 3 most recent
-        if (Array.isArray(mediumPosts) && mediumPosts.length > 0) {
-          const sortedPosts = mediumPosts
-            .sort((a, b) => {
-              const dateA = new Date(a.date)
-              const dateB = new Date(b.date)
-              return dateB.getTime() - dateA.getTime()
-            })
-            .slice(0, 3)
-
-          setPosts(sortedPosts)
-        }
-      } catch (error) {
-        console.error("Error fetching Medium posts:", error)
-        // No fallback to local posts since we removed them
+        const data = await response.json()
+        setPosts(data)
+        setError(null)
+      } catch (err) {
+        console.error("Error loading posts:", err)
+        setError("Failed to load Medium posts. Please try again later.")
         setPosts([])
       } finally {
         setLoading(false)
       }
     }
 
-    fetchMediumPosts()
+    loadPosts()
   }, [])
 
   const fadeInUp = {
@@ -77,6 +56,26 @@ export default function FeaturedPosts() {
     )
   }
 
+  if (error) {
+    return (
+      <section className="py-20 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Latest Insights</h2>
+            <div className="w-20 h-1 bg-emerald-500 mx-auto mb-8"></div>
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-4">{error}</p>
+            <a href="https://medium.com/@dingshuling" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline">
+                Visit Medium Blog
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,7 +90,7 @@ export default function FeaturedPosts() {
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Latest Insights</h2>
           <div className="w-20 h-1 bg-emerald-500 mx-auto mb-8"></div>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Explore my thoughts on AI, data science, and the future of health technology from my Medium blog
+            Explore my thoughts on AI, data science, and the future of health technology
           </p>
         </motion.div>
 
@@ -109,13 +108,11 @@ export default function FeaturedPosts() {
                 >
                   <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow duration-300 border-0 shadow-md dark:bg-gray-800">
                     <div className="relative h-48 bg-emerald-100 dark:bg-emerald-900">
-                      {post.coverImage && (
-                        <img
-                          src={post.coverImage || "/placeholder.svg"}
-                          alt={post.title}
-                          className="w-full h-full object-cover"
-                        />
-                      )}
+                      <img
+                        src={post.coverImage || "/placeholder.svg?height=200&width=400&text=Health+Tech+Article"}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                      />
                       <div className="absolute top-2 right-2">
                         <Badge
                           variant="secondary"
@@ -128,9 +125,9 @@ export default function FeaturedPosts() {
                     </div>
                     <CardContent className="p-6">
                       <div className="flex flex-wrap gap-2 mb-3">
-                        {post.categories.map((category) => (
+                        {post.categories.map((category, i) => (
                           <Badge
-                            key={category}
+                            key={i}
                             variant="secondary"
                             className="capitalize bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
                           >
@@ -184,7 +181,7 @@ export default function FeaturedPosts() {
               <a href="https://medium.com/@dingshuling" target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" size="lg">
                   View All Articles on Medium
-                  <ExternalLink className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </a>
             </motion.div>
@@ -192,7 +189,7 @@ export default function FeaturedPosts() {
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Articles are loading from Medium. Please check back soon!
+              No articles found. Check out my Medium profile for the latest content!
             </p>
             <a href="https://medium.com/@dingshuling" target="_blank" rel="noopener noreferrer">
               <Button variant="outline">

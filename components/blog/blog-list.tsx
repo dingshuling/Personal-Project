@@ -1,22 +1,81 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, ArrowRight, ExternalLink } from "lucide-react"
+import { Calendar, Clock, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-export default function BlogList({ posts }) {
+export default function BlogList({ posts = [] }) {
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [mediumPosts, setMediumPosts] = useState(posts)
 
   // Get unique categories
-  const categories = ["all", ...new Set(posts.flatMap((post) => post.categories))]
+  const categories = ["all", ...new Set(mediumPosts.flatMap((post) => post.categories))]
 
   // Filter posts by selected category
   const filteredPosts =
-    selectedCategory === "all" ? posts : posts.filter((post) => post.categories.includes(selectedCategory))
+    selectedCategory === "all" ? mediumPosts : mediumPosts.filter((post) => post.categories.includes(selectedCategory))
+
+  // If posts are empty, try to fetch them
+  useEffect(() => {
+    if (posts.length === 0) {
+      async function fetchPosts() {
+        try {
+          setLoading(true)
+          const response = await fetch("/api/medium-posts")
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch posts: ${response.status}`)
+          }
+
+          const data = await response.json()
+          setMediumPosts(data)
+          setError(null)
+        } catch (err) {
+          console.error("Error loading posts:", err)
+          setError("Failed to load Medium posts. Please try again later.")
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      fetchPosts()
+    }
+  }, [posts])
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-white dark:bg-gray-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12">
+            <p className="text-gray-600 dark:text-gray-400">Loading articles...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-white dark:bg-gray-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12">
+            <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
+            <a href="https://medium.com/@dingshuling" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline">
+                Visit Medium Blog
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="py-16 bg-white dark:bg-gray-950">
@@ -49,6 +108,19 @@ export default function BlogList({ posts }) {
             <p className="text-gray-600 dark:text-gray-400">No posts found in this category.</p>
           </div>
         )}
+
+        {/* Link to Medium profile */}
+        <div className="mt-16 text-center">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Want to read more? Check out my complete collection of articles on Medium.
+          </p>
+          <a href="https://medium.com/@dingshuling" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" size="lg">
+              Visit My Medium Profile
+              <ExternalLink className="ml-2 h-4 w-4" />
+            </Button>
+          </a>
+        </div>
       </div>
     </section>
   )
@@ -63,23 +135,19 @@ function BlogCard({ post, index }) {
     >
       <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow duration-300 border-0 shadow-md dark:bg-gray-800 flex flex-col">
         <div className="relative h-48 bg-emerald-100 dark:bg-emerald-900">
-          {post.coverImage && (
-            <img src={post.coverImage || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
-          )}
-          {post.isExternal && (
-            <div className="absolute top-2 right-2">
-              <Badge variant="secondary" className="bg-white text-emerald-800 dark:bg-gray-800 dark:text-emerald-200">
-                <ExternalLink className="h-3 w-3 mr-1" />
-                Medium
-              </Badge>
-            </div>
-          )}
+          <img src={post.coverImage || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
+          <div className="absolute top-2 right-2">
+            <Badge variant="secondary" className="bg-white text-emerald-800 dark:bg-gray-800 dark:text-emerald-200">
+              <ExternalLink className="h-3 w-3 mr-1" />
+              Medium
+            </Badge>
+          </div>
         </div>
         <CardContent className="p-6 flex-grow flex flex-col">
           <div className="flex flex-wrap gap-2 mb-3">
-            {post.categories.map((category) => (
+            {post.categories.map((category, i) => (
               <Badge
-                key={category}
+                key={i}
                 variant="secondary"
                 className="capitalize bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
               >
@@ -89,23 +157,14 @@ function BlogCard({ post, index }) {
           </div>
 
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-            {post.isExternal ? (
-              <a
-                href={post.externalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-              >
-                {post.title}
-              </a>
-            ) : (
-              <Link
-                href={`/blog/${post.slug}`}
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-              >
-                {post.title}
-              </Link>
-            )}
+            <a
+              href={post.externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+            >
+              {post.title}
+            </a>
           </h3>
 
           <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">{post.excerpt}</p>
@@ -115,25 +174,19 @@ function BlogCard({ post, index }) {
               <Calendar className="h-4 w-4 mr-1" />
               <span>{post.date}</span>
             </div>
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-1" />
-              <span>{post.readingTime} min read</span>
-            </div>
+            {post.readingTime && (
+              <div className="flex items-center">
+                <Clock className="h-4 w-4 mr-1" />
+                <span>{post.readingTime} min read</span>
+              </div>
+            )}
           </div>
 
-          {post.isExternal ? (
-            <a href={post.externalUrl} target="_blank" rel="noopener noreferrer" className="mt-auto">
-              <Button variant="outline" className="w-full">
-                Read on Medium <ExternalLink className="ml-2 h-4 w-4" />
-              </Button>
-            </a>
-          ) : (
-            <Link href={`/blog/${post.slug}`} className="mt-auto">
-              <Button variant="outline" className="w-full">
-                Read More <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          )}
+          <a href={post.externalUrl} target="_blank" rel="noopener noreferrer" className="mt-auto">
+            <Button variant="outline" className="w-full">
+              Read on Medium <ExternalLink className="ml-2 h-4 w-4" />
+            </Button>
+          </a>
         </CardContent>
       </Card>
     </motion.div>

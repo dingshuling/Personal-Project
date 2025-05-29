@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 
+// v29 content restored - creating new version
 export default function Hero() {
   return (
     <div className="relative w-full bg-gradient-to-b from-emerald-50 to-white dark:from-gray-900 dark:to-gray-950 overflow-hidden">
@@ -16,10 +17,11 @@ export default function Hero() {
         >
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
             <span className="block">AI & Data Strategy for</span>
-            <span className="block text-emerald-600 dark:text-emerald-400">Health & AI Centric Startups</span>
+            <span className="block text-emerald-600 dark:text-emerald-400">Health Tech Startups</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-            Helping Pre-seed and Series A health & AI Centric startups leverage data science and AI to accelerate growth.
+            Helping pre-seed and Series A health & wellness startups leverage data science and AI to accelerate growth
+            and create impactful solutions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -33,9 +35,9 @@ export default function Hero() {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => document.getElementById("accomplishments")?.scrollIntoView({ behavior: "smooth" })}
+              onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })}
             >
-              View My Expertise
+              Learn How I Can Help
             </Button>
           </div>
         </motion.div>

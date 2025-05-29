@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Award, Briefcase } from "lucide-react"
+import { Award, Briefcase, Code, Users, TrendingUp, Target } from "lucide-react"
 
 export default function ExperienceSection() {
   const fadeInUp = {
@@ -11,100 +11,161 @@ export default function ExperienceSection() {
     visible: { opacity: 1, y: 0 },
   }
 
-  const skills = [
+  const highlights = [
+    {
+      icon: <Users className="h-6 w-6 text-emerald-500" />,
+      title: "Team Leadership",
+      description:
+        "Expanded global data team from 2 to 17 members, fostering cross-functional collaboration and continuous learning culture",
+    },
+    {
+      icon: <TrendingUp className="h-6 w-6 text-emerald-500" />,
+      title: "Revenue Impact",
+      description:
+        "Generated $30-$40M additional revenue in 2023 through switchback experimentation and contributed to Tubi's 10x growth",
+    },
+    {
+      icon: <Target className="h-6 w-6 text-emerald-500" />,
+      title: "A/B Testing Framework",
+      description:
+        "Established scalable testing framework resulting in hundreds of experiments per quarter, driving product development",
+    },
+    {
+      icon: <Code className="h-6 w-6 text-emerald-500" />,
+      title: "Data Democratization",
+      description:
+        "Implemented AI-driven automation tools like Text-to-SQL for broader data access and improved usability organization-wide",
+    },
+  ]
+
+  const technologies = [
     { name: "Python", category: "Programming" },
     { name: "SQL", category: "Programming" },
-    { name: "R", category: "Programming" },
-    { name: "Classification", category: "Machine Learning" },
-    { name: "Regression", category: "Machine Learning" },
-    { name: "Forecasting", category: "Machine Learning" },
-    { name: "Causal Inference", category: "Machine Learning" },
-    { name: "CNNs", category: "AI & Deep Learning" },
-    { name: "RNNs", category: "AI & Deep Learning" },
-    { name: "Transformers", category: "AI & Deep Learning" },
-    { name: "Generative AI", category: "AI & Deep Learning" },
-    { name: "LLMs", category: "AI & Deep Learning" },
-    { name: "Data Pipelines", category: "Data Engineering" },
-    { name: "ETL", category: "Data Engineering" },
-    { name: "Data Governance", category: "Data Engineering" },
-    { name: "Data Strategy", category: "Leadership" },
-    { name: "Roadmap Planning", category: "Leadership" },
-    { name: "Cross-Functional Collaboration", category: "Leadership" },
+    { name: "TensorFlow", category: "AI/ML" },
+    { name: "ChatGPT", category: "AI/ML" },
+    { name: "MLlib", category: "AI/ML" },
+    { name: "Scikit-Learn", category: "AI/ML" },
+    { name: "AWS", category: "Cloud/Infrastructure" },
+    { name: "Redshift", category: "Cloud/Infrastructure" },
+    { name: "Airflow", category: "Cloud/Infrastructure" },
+    { name: "Tableau", category: "Analytics" },
+    { name: "Pandas", category: "Analytics" },
+    { name: "dbt", category: "Analytics" },
+    { name: "Flask", category: "Development" },
   ]
 
   const experiences = [
     {
-      title: "Data Leader, Self Employed",
-      subtitle: "AI & Personal Health Focus",
+      title: "Data Leader",
+      company: "Self Employed",
       period: "Jan 2025 - Present",
-      description:
-        "Partnering with pre-seed startups to develop data integration frameworks and AI roadmaps. Focusing on consumer wellness applications and AI-driven health optimization.",
-      borderColor: "border-l-blue-400",
+      focus: "Personal Health • Artificial Intelligence",
+      description: "Partnering with pre-seed startups to develop data integration frameworks and AI roadmaps.",
+      borderColor: "border-l-emerald-500",
     },
     {
-      title: "Senior Director of Data Science, Tubi",
-      subtitle: "Hypergrowth Data Leadership",
+      title: "Senior Director of Data Science",
+      company: "Tubi",
       period: "Aug 2017 - Aug 2024",
+      focus: "B2C • Content • Digital Media",
       description:
-        "Led data team growth from 2 to 17 members during Tubi's 10x expansion. Established scalable A/B testing framework generating $30-40M additional revenue through experimentation. Built ML models for customer behavior prediction and content optimization.",
+        "Led machine learning models for customer behavior prediction, content performance, and revenue growth. Collaborated with top management on data strategy and company roadmap.",
       borderColor: "border-l-blue-500",
     },
     {
-      title: "Senior Data Scientist, Chegg",
-      subtitle: "AI-Powered Education Platform",
+      title: "Senior Data Scientist",
+      company: "Chegg",
       period: "Aug 2015 - Jul 2017",
+      focus: "AI-Powered Education Platform",
       description:
         "Developed customer lifetime value models driving 5-10% increase in product cross-sell and marketing efficiency across all business segments.",
-      borderColor: "border-l-blue-600",
+      borderColor: "border-l-purple-500",
     },
     {
-      title: "Manager, Pricing & Marketing Analytics, Expedia/Hotwire",
-      subtitle: "Travel Industry Analytics",
+      title: "Manager, Pricing & Marketing Analytics",
+      company: "Expedia/Hotwire",
       period: "Apr 2011 - Mar 2015",
+      focus: "Travel Industry",
       description:
-        "Managed team of 3 analysts creating pricing A/B tests that drove 10% year-over-year revenue increase. Enhanced search click-through rate by 5% through systematic experimentation.",
-      borderColor: "border-l-blue-700",
+        "Managed team of 3 analysts creating pricing A/B tests that drove 10% year-over-year revenue increase. Enhanced search click-through rate by 5%.",
+      borderColor: "border-l-orange-500",
     },
+  ]
+
+  const strengths = [
+    "Prototype ideas and align data strategy with business goals",
+    "Drive cross-functional collaboration across teams",
+    "Champion best practices and support teammates with thoughtful guidance",
+    "Build AI products and data-intensive applications",
+    "Focus on product roadmaps and strategy",
   ]
 
   return (
     <section id="experience" className="py-20 bg-white dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Experience Highlights Section */}
+        {/* Section Header */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           variants={fadeInUp}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Experience Highlights</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Experience Highlights and Skills</h2>
           <div className="w-20 h-1 bg-emerald-500 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Over 14 years of experience building and leading data teams across health tech, media, education, and travel
-            industries.
-          </p>
         </motion.div>
 
-        <div className="space-y-6 mb-20">
-          {experiences.map((experience, index) => (
-            <motion.div
-              key={index}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              variants={fadeInUp}
-            >
-              <Card className="overflow-hidden border-0 shadow-md dark:bg-gray-800">
+        {/* Key Highlights */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          variants={fadeInUp}
+          className="mb-16"
+        >
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Key Achievements</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            {highlights.map((highlight, index) => (
+              <Card key={index} className="border-0 shadow-md dark:bg-gray-800">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
+                      {highlight.icon}
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{highlight.title}</h4>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm">{highlight.description}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Work Experience */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          variants={fadeInUp}
+          className="mb-16"
+        >
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Professional Experience</h3>
+          <div className="space-y-6">
+            {experiences.map((experience, index) => (
+              <Card key={index} className="overflow-hidden border-0 shadow-md dark:bg-gray-800">
                 <CardContent className={`p-6 border-l-4 ${experience.borderColor}`}>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">{experience.title}</h3>
-                      <p className="text-emerald-600 dark:text-emerald-400 font-medium">{experience.subtitle}</p>
+                      <h4 className="text-xl font-bold text-gray-900 dark:text-white">{experience.title}</h4>
+                      <p className="text-emerald-600 dark:text-emerald-400 font-medium">{experience.company}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{experience.focus}</p>
                     </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2 md:mt-0">
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2 md:mt-0 flex items-center">
                       <Briefcase className="inline-block h-4 w-4 mr-1" />
                       {experience.period}
                     </div>
@@ -112,66 +173,104 @@ export default function ExperienceSection() {
                   <p className="text-gray-600 dark:text-gray-300">{experience.description}</p>
                 </CardContent>
               </Card>
-            </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </motion.div>
 
-        {/* Skills Section */}
+        {/* Technical Skills */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
           variants={fadeInUp}
-          className="text-center mb-12"
+          className="mb-16"
         >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Skills & Expertise</h2>
-          <div className="w-20 h-1 bg-emerald-500 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Technical and leadership skills developed across multiple industries and roles.
-          </p>
-        </motion.div>
+          <Card className="border-0 shadow-lg dark:bg-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center mb-6">
+                <Award className="h-8 w-8 text-emerald-500 mr-3" />
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Technical Skills</h3>
+              </div>
 
-        <Card className="border-0 shadow-lg dark:bg-gray-800">
-          <CardContent className="p-6">
-            <div className="flex items-center mb-6">
-              <Award className="h-8 w-8 text-emerald-500 mr-3" />
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Technical & Leadership Skills</h3>
-            </div>
-
-            <div className="space-y-4">
-              {["Programming", "Machine Learning", "AI & Deep Learning", "Data Engineering", "Leadership"].map(
-                (category) => (
+              <div className="space-y-4">
+                {["Programming", "AI/ML", "Cloud/Infrastructure", "Analytics", "Development"].map((category) => (
                   <div key={category}>
                     <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{category}</h4>
                     <div className="flex flex-wrap gap-2">
-                      {skills
-                        .filter((skill) => skill.category === category)
-                        .map((skill, index) => (
+                      {technologies
+                        .filter((tech) => tech.category === category)
+                        .map((tech, index) => (
                           <Badge
                             key={index}
                             variant="secondary"
                             className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
                           >
-                            {skill.name}
+                            {tech.name}
                           </Badge>
                         ))}
                     </div>
                   </div>
-                ),
-              )}
-            </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-              <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Education</h4>
-              <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-                <li>Master in Operations Research, University of Texas at Austin</li>
-                <li>Master in Industrial Engineering, Tsinghua University</li>
-                <li>Bachelor in Electronics Information Science and Technology, China University of Geosciences</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Core Strengths */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          variants={fadeInUp}
+        >
+          <Card className="border-0 shadow-lg dark:bg-gray-800">
+            <CardContent className="p-6">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Core Strengths</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {strengths.map((strength, index) => (
+                  <div key={index} className="flex items-center">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3 flex-shrink-0"></div>
+                    <p className="text-gray-600 dark:text-gray-300">{strength}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Education */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          variants={fadeInUp}
+          className="mt-16"
+        >
+          <Card className="border-0 shadow-lg dark:bg-gray-800">
+            <CardContent className="p-6">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Education</h3>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <p className="font-semibold text-gray-900 dark:text-white">Master in Operations Research</p>
+                  <p className="text-gray-600 dark:text-gray-300">University of Texas at Austin</p>
+                </div>
+                <div className="text-center">
+                  <p className="font-semibold text-gray-900 dark:text-white">Master in Industrial Engineering</p>
+                  <p className="text-gray-600 dark:text-gray-300">Tsinghua University</p>
+                </div>
+                <div className="text-center">
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    Bachelor in Electronics Information Science and Technology
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">China University of Geosciences</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </section>
   )
